@@ -1,4 +1,4 @@
-# A small example project with Vaadin 15 and TypeScript
+# A naive example project with Vaadin 15 and TypeScript
 
 ## Custom project from start.vaadin.com
 
