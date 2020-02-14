@@ -1,6 +1,10 @@
-# Custom project from start.vaadin.com
+# A small example project with Vaadin 15 and TypeScript
 
-This project was created from https://start.vaadin.com and then modified for a H2 in-memory database.
+## Custom project from start.vaadin.com
+
+This project was created from https://start.vaadin.com.
+
+## Running the application
 
 The project is a standard Maven project, so you can import it to your IDE of choice. You'll need to have Java 8+ and Node.js 10+ installed.
 
