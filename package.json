@@ -14,7 +14,7 @@
     "@vaadin/vaadin-split-layout": "4.1.1",
     "@vaadin/vaadin-cookie-consent": "1.1.2",
     "@vaadin/vaadin-combo-box": "5.0.10",
-    "@vaadin/vaadin-core-shrinkwrap": "15.0.0-beta1",
+    "@vaadin/vaadin-core-shrinkwrap": "15.0.0-beta2",
     "@vaadin/vaadin-upload": "4.2.2",
     "@vaadin/vaadin-dialog": "2.2.1",
     "@vaadin/vaadin-select": "2.1.7",
@@ -24,7 +24,7 @@
     "@vaadin/vaadin-notification": "1.4.0",
     "@vaadin/vaadin-grid-pro": "2.0.6",
     "@vaadin/vaadin-progress-bar": "1.1.2",
-    "@vaadin/vaadin-shrinkwrap": "15.0.0-beta1",
+    "@vaadin/vaadin-shrinkwrap": "15.0.0-beta2",
     "@vaadin/vaadin-ordered-layout": "1.1.0",
     "@vaadin/vaadin-login": "1.0.1",
     "@vaadin/vaadin-button": "2.2.2",
@@ -55,7 +55,7 @@
     "copy-webpack-plugin": "5.1.0",
     "webpack-merge": "4.2.2",
     "raw-loader": "3.0.0",
-    "typescript": "3.5.3",
+    "typescript": "3.7.3",
     "awesome-typescript-loader": "5.2.1",
     "compression-webpack-plugin": "3.0.1",
     "html-webpack-plugin": "3.2.0",
@@ -71,7 +71,7 @@
       "@vaadin/vaadin-split-layout": "4.1.1",
       "@vaadin/vaadin-cookie-consent": "1.1.2",
       "@vaadin/vaadin-combo-box": "5.0.10",
-      "@vaadin/vaadin-core-shrinkwrap": "15.0.0-beta1",
+      "@vaadin/vaadin-core-shrinkwrap": "15.0.0-beta2",
       "@vaadin/vaadin-upload": "4.2.2",
       "@vaadin/vaadin-dialog": "2.2.1",
       "@vaadin/vaadin-select": "2.1.7",
@@ -82,7 +82,7 @@
       "@vaadin/vaadin-notification": "1.4.0",
       "@vaadin/vaadin-grid-pro": "2.0.6",
       "@vaadin/vaadin-progress-bar": "1.1.2",
-      "@vaadin/vaadin-shrinkwrap": "15.0.0-beta1",
+      "@vaadin/vaadin-shrinkwrap": "15.0.0-beta2",
       "@vaadin/vaadin-ordered-layout": "1.1.0",
       "@vaadin/vaadin-login": "1.0.1",
       "@vaadin/vaadin-button": "2.2.2",
@@ -116,10 +116,10 @@
       "html-webpack-plugin": "3.2.0",
       "script-ext-html-webpack-plugin": "2.1.4",
       "awesome-typescript-loader": "5.2.1",
-      "typescript": "3.5.3",
+      "typescript": "3.7.3",
       "webpack-merge": "4.2.2",
       "webpack-dev-server": "3.9.0"
     },
-    "hash": "56cd26ece20675c3254568ae631dd31cf587d24efc69bcdcbac421e287a681c6"
+    "hash": "bfc9e0e9600f6fbe00e5a359f2b5585e455dbaeda5c0fc18fc29a10a2b8c1e6c"
   }
 }

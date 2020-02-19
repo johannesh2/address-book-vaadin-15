@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.vaadin.flow.server.connect.Endpoint;
 import com.vaadin.flow.server.connect.auth.AnonymousAllowed;
-import com.vaadin.flow.server.connect.exception.VaadinConnectException;
+import com.vaadin.flow.server.connect.exception.EndpointException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.example.backend.entity.Company;
@@ -32,7 +32,7 @@ public class MasterDetailEndpoint {
         return contactService.findAll();
     }
 
-    public void saveEmployee(Contact contact) throws VaadinConnectException {
+    public void saveEmployee(Contact contact) throws EndpointException {
         contactService.save(contact);
     }
 

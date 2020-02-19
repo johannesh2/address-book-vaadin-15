@@ -19,7 +19,7 @@ import * as viewEndpoint from '../../generated/MasterDetailEndpoint';
 import Contact from '../../generated/org/vaadin/example/backend/entity/Contact';
 import Company from '../../generated/org/vaadin/example/backend/entity/Company';
 
-import { VaadinConnectError } from '@vaadin/flow-frontend/Connect';
+import { EndpointError } from '@vaadin/flow-frontend/Connect';
 
 // utilities to import style modules
 import { CSSModule } from '../../css-utils';
@@ -163,7 +163,7 @@ export class MasterDetailViewElement extends LitElement {
         this.grid.clearCache();
       }
     } catch (error) {
-      if (error instanceof VaadinConnectError) {
+      if (error instanceof EndpointError) {
         this.notification.renderer = (root: Element) =>
           (root.textContent = `Server error. ${error.message}`);
         this.notification.open();
