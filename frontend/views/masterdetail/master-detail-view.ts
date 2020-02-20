@@ -1,5 +1,4 @@
 import { customElement, html, LitElement, query, unsafeCSS } from 'lit-element';
-import { render } from 'lit-html';
 
 import '@vaadin/vaadin-button/vaadin-button';
 import '@vaadin/vaadin-form-layout/vaadin-form-item';
@@ -17,7 +16,6 @@ import * as viewEndpoint from '../../generated/MasterDetailEndpoint';
 
 // import types used in the endpoint
 import Contact from '../../generated/org/vaadin/example/backend/entity/Contact';
-import Company from '../../generated/org/vaadin/example/backend/entity/Company';
 
 import { EndpointError } from '@vaadin/flow-frontend/Connect';
 
@@ -50,21 +48,9 @@ export class MasterDetailViewElement extends LitElement {
       <vaadin-split-layout class="splitLayout">
         <div class="splitLayout__gridTable">
           <vaadin-grid id="grid" class="splitLayout" theme="no-border">
-            <vaadin-grid-column .renderer=${this.firstNameRenderer}>
-              <template class="header">
-                First name
-              </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column .renderer=${this.lastNameRenderer}>
-              <template class="header">
-                Last name
-              </template>
-            </vaadin-grid-column>
-            <vaadin-grid-column .renderer=${this.emailRenderer}>
-              <template class="header">
-                Email
-              </template>
-            </vaadin-grid-column>
+            <vaadin-grid-column header="First name" path="firstName"></vaadin-grid-column>
+            <vaadin-grid-column header="Last name" path="lastName"></vaadin-grid-column>
+            <vaadin-grid-column header="Email" path="email"></vaadin-grid-column>
           </vaadin-grid>
         </div>
         <div id="editor-layout">
@@ -92,9 +78,8 @@ export class MasterDetailViewElement extends LitElement {
             </vaadin-form-item>
             <vaadin-form-item>
               <label slot="label">Company</label>
-              <vaadin-combo-box class="full-width" id="company">
-                ></vaadin-combo-box
-              >
+              <vaadin-combo-box class="full-width" id="company" item-label-path="name" item-value-path="id">
+              </vaadin-combo-box>
             </vaadin-form-item>
           </vaadin-form-layout>
           <vaadin-horizontal-layout id="button-layout" theme="spacing">
@@ -140,9 +125,6 @@ export class MasterDetailViewElement extends LitElement {
 
     const companies = await viewEndpoint.getCompanies();
     this.company.items = companies;
-    this.company.itemValuePath = 'id';
-    this.company.itemLabelPath = 'name';
-    this.company.renderer = this.companyRenderer;
   }
 
   private async save() {
@@ -180,41 +162,5 @@ export class MasterDetailViewElement extends LitElement {
     this.email.value = '';
     this.employeeId = '';
     this.company.value = null;
-  }
-
-  private firstNameRenderer(root: Element, _: any, rowData: { item: Contact }) {
-    render(
-      html`
-        <span>${rowData.item.firstName}</span>
-      `,
-      root
-    );
-  }
-
-  private lastNameRenderer(root: Element, _: any, rowData: { item: Contact }) {
-    render(
-      html`
-        <span>${rowData.item.lastName}</span>
-      `,
-      root
-    );
-  }
-
-  private emailRenderer(root: Element, _: any, rowData: { item: Contact }) {
-    render(
-      html`
-        <span>${rowData.item.email}</span>
-      `,
-      root
-    );
-  }
-
-  private companyRenderer(root: Element, _: any, rowData: { item: Company }) {
-    render(
-      html`
-        <span>${rowData.item.name}</span>
-      `,
-      root
-    );
   }
 }
