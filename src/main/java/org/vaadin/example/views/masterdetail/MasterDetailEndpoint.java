@@ -28,8 +28,8 @@ public class MasterDetailEndpoint {
         this.companyService = companyService;
     }
 
-    public List<Contact> getEmployees() {
-        return contactService.findAll();
+    public PageResult<Contact> getEmployees(int page, int pageSize) {
+        return new PageResult<Contact>(contactService.findAll(page, pageSize), contactService.count());
     }
 
     public void saveEmployee(Contact contact) throws EndpointException {

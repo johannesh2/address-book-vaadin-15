@@ -1,21 +1,27 @@
-import { customElement, html, LitElement, query, unsafeCSS } from 'lit-element';
+import { customElement, html, LitElement, query, unsafeCSS, property } from 'lit-element';
 
 import '@vaadin/vaadin-button/vaadin-button';
 import '@vaadin/vaadin-form-layout/vaadin-form-item';
 import '@vaadin/vaadin-form-layout/vaadin-form-layout';
-import '@vaadin/vaadin-grid/vaadin-grid';
+import '@vaadin/vaadin-grid/vaadin-grid.js';
+import { GridElement } from '@vaadin/vaadin-grid/vaadin-grid';
 import '@vaadin/vaadin-grid/vaadin-grid-column';
-import '@vaadin/vaadin-notification/vaadin-notification';
+import '@vaadin/vaadin-notification/vaadin-notification.js';
+import { NotificationElement } from '@vaadin/vaadin-notification/vaadin-notification';
 import '@vaadin/vaadin-ordered-layout/vaadin-horizontal-layout';
 import '@vaadin/vaadin-split-layout/vaadin-split-layout';
 import '@vaadin/vaadin-combo-box/vaadin-combo-box';
 import '@vaadin/vaadin-text-field/vaadin-text-field';
 
+import { Binder, field } from '@vaadin/form';
+
 // import the remote endpoint
-import * as viewEndpoint from '../../generated/MasterDetailEndpoint';
+import { getCompanies, getEmployees, saveEmployee } from '../../generated/MasterDetailEndpoint';
 
 // import types used in the endpoint
 import Contact from '../../generated/org/vaadin/example/backend/entity/Contact';
+import Company from '../../generated/org/vaadin/example/backend/entity/Company';
+
 
 import { EndpointError } from '@vaadin/flow-frontend/Connect';
 
@@ -24,6 +30,7 @@ import { CSSModule } from '../../css-utils';
 
 // @ts-ignore
 import styles from './master-detail-view.css';
+import ContactModel from '../../generated/org/vaadin/example/backend/entity/ContactModel';
 
 @customElement('master-detail-view')
 export class MasterDetailViewElement extends LitElement {
@@ -32,25 +39,37 @@ export class MasterDetailViewElement extends LitElement {
   }
 
   @query('#grid')
-  private grid: any;
+  private grid!: GridElement;
 
   @query('#notification')
-  private notification: any;
+  private notification!: NotificationElement;
 
-  @query('#firstName') private firstName: any;
-  @query('#lastName') private lastName: any;
-  @query('#email') private email: any;
-  @query('#company') private company: any;
-  private employeeId: any;
+  @property({ type: Array }) contacts: Contact[] = [];
+
+  @property({ type: Array }) companies: Company[] = [];
+
+
+  private binder = new Binder(this, ContactModel);
+
 
   render() {
     return html`
       <vaadin-split-layout class="splitLayout">
         <div class="splitLayout__gridTable">
-          <vaadin-grid id="grid" class="splitLayout" theme="no-border">
-            <vaadin-grid-column header="First name" path="firstName"></vaadin-grid-column>
-            <vaadin-grid-column header="Last name" path="lastName"></vaadin-grid-column>
-            <vaadin-grid-column header="Email" path="email"></vaadin-grid-column>
+          <vaadin-grid id="grid" class="splitLayout" theme="no-border"
+            @active-item-changed="${this.activeItemChanged}">
+            <vaadin-grid-column
+              header="First name"
+              path="firstName"
+            ></vaadin-grid-column>
+            <vaadin-grid-column
+              header="Last name"
+              path="lastName"
+            ></vaadin-grid-column>
+            <vaadin-grid-column
+              header="Email"
+              path="email"
+            ></vaadin-grid-column>
           </vaadin-grid>
         </div>
         <div id="editor-layout">
@@ -60,6 +79,7 @@ export class MasterDetailViewElement extends LitElement {
               <vaadin-text-field
                 class="full-width"
                 id="firstName"
+                ...="${field(this.binder.model.firstName)}"
               ></vaadin-text-field>
             </vaadin-form-item>
             <vaadin-form-item>
@@ -67,6 +87,7 @@ export class MasterDetailViewElement extends LitElement {
               <vaadin-text-field
                 class="full-width"
                 id="lastName"
+                ...="${field(this.binder.model.lastName)}"
               ></vaadin-text-field>
             </vaadin-form-item>
             <vaadin-form-item>
@@ -74,11 +95,19 @@ export class MasterDetailViewElement extends LitElement {
               <vaadin-text-field
                 class="full-width"
                 id="email"
+                ...="${field(this.binder.model.email)}"
               ></vaadin-text-field>
             </vaadin-form-item>
             <vaadin-form-item>
               <label slot="label">Company</label>
-              <vaadin-combo-box class="full-width" id="company" item-label-path="name" item-value-path="id">
+              <vaadin-combo-box
+                class="full-width"
+                id="company"
+                item-label-path="name"
+                item-value-path="id"
+                .items="${this.companies}"
+                ...="${field(this.binder.model.company.id)}"
+              >
               </vaadin-combo-box>
             </vaadin-form-item>
           </vaadin-form-layout>
@@ -86,7 +115,7 @@ export class MasterDetailViewElement extends LitElement {
             <vaadin-button theme="tertiary" slot="" @click="${this.clearForm}">
               Cancel
             </vaadin-button>
-            <vaadin-button theme="primary" @click="${this.save}">
+            <vaadin-button theme="primary" @click="${this.save}" ?disabled="${this.binder.invalid || this.binder.submitting}">
               Save
             </vaadin-button>
           </vaadin-horizontal-layout>
@@ -101,49 +130,29 @@ export class MasterDetailViewElement extends LitElement {
   async firstUpdated(changedProperties: any) {
     super.firstUpdated(changedProperties);
 
-    // Retrieve data from the server-side endpoint.
-    const persons = await viewEndpoint.getEmployees();
-    this.grid.items = persons;
-    this.grid.addEventListener('active-item-changed', function(
-      this: any,
-      event: any
-    ) {
-      const item = event.detail.value;
-      this.selectedItems = item ? [item] : [];
-      const customView = this.domHost;
+    
+    this.companies = await getCompanies();
 
-      if (item) {
-        customView.firstName.value = item.firstName;
-        customView.lastName.value = item.lastName;
-        customView.email.value = item.email;
-        customView.employeeId = item.id;
-        customView.company.value = item.company.id;
-      } else {
-        customView.clearForm();
-      }
-    });
+    this.grid.dataProvider = async (params, callback) => {
+      // Retrieve data from the server-side endpoint.
+      const result = await getEmployees(params.page, params.pageSize);
+      callback(result.pageItems, result.totalCount);
+    };
+  }
 
-    const companies = await viewEndpoint.getCompanies();
-    this.company.items = companies;
+  private activeItemChanged(event: any) {
+    const item = event.detail.value;
+    if (item) {
+      this.binder.read(item);
+    } else {
+      this.binder.clear();
+    }
+    this.grid.selectedItems = item ? [item] : [];
   }
 
   private async save() {
-    const contact: Contact = {
-      id: this.employeeId,
-      email: this.email.value,
-      firstName: this.firstName.value,
-      lastName: this.lastName.value,
-      company: this.company.selectedItem
-    };
     try {
-      await viewEndpoint.saveEmployee(contact);
-      const index = this.grid.items.findIndex(
-        (item: Contact) => item.id === contact.id
-      );
-      if (index >= 0) {
-        this.grid.items[index] = contact;
-        this.grid.clearCache();
-      }
+      await this.binder.submitTo(saveEmployee);
     } catch (error) {
       if (error instanceof EndpointError) {
         this.notification.renderer = (root: Element) =>
@@ -156,11 +165,7 @@ export class MasterDetailViewElement extends LitElement {
   }
 
   private clearForm() {
+    this.binder.clear();
     this.grid.selectedItems = [];
-    this.firstName.value = '';
-    this.lastName.value = '';
-    this.email.value = '';
-    this.employeeId = '';
-    this.company.value = null;
   }
 }

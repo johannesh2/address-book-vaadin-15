@@ -1,3 +1,4 @@
 {
-  "java.format.settings.url": "https://raw.githubusercontent.com/vaadin/framework/master/eclipse/VaadinJavaConventions.xml"
+  "java.format.settings.url": "https://raw.githubusercontent.com/vaadin/framework/master/eclipse/VaadinJavaConventions.xml",
+  "java.configuration.updateBuildConfiguration": "interactive"
 }
